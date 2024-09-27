@@ -1,7 +1,5 @@
 #include "parsing.h"
 
-extern int status;
-
 // parses an argument of the command stream input
 static char *
 get_token(char *buf, int idx)
@@ -103,30 +101,7 @@ parse_environ_var(struct execcmd *c, char *arg)
 static char *
 expand_environ_var(char *arg)
 {
-	if (arg[0] == '$') {
-		if (arg[1] == '?') {
-			int new_size = snprintf(NULL, 0, "%d", status);
-			arg = (char *) realloc(arg, new_size + 1);
-			snprintf(arg, new_size + 1, "%d", status);
-
-			return arg;
-		}
-
-		char *variable = arg + 1;
-
-		char *env = getenv(variable);
-
-		if (!env || strlen(env) == 0) {
-			strcpy(arg, "");
-			return arg;
-		}
-
-		if (strlen(env) > strlen(arg)) {
-			size_t new_size = strlen(env);
-			arg = (char *) realloc(arg, new_size + 1);
-			strcpy(arg, env);
-		}
-	}
+	// Your code here
 
 	return arg;
 }
@@ -159,9 +134,7 @@ parse_exec(char *buf_cmd)
 
 		tok = expand_environ_var(tok);
 
-		if (tok && strlen(tok)) {
-			c->argv[argc++] = tok;
-		}
+		c->argv[argc++] = tok;
 	}
 
 	c->argv[argc] = (char *) NULL;
@@ -205,9 +178,6 @@ parse_cmd(char *buf_cmd)
 
 	return parse_exec(buf_cmd);
 }
-// ls -l | grep Doc | wc
-// left: ls -l
-// right: grep Doc | wc
 
 // parses the command line
 // looking for the pipe character '|'
