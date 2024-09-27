@@ -77,7 +77,7 @@ set_environ_vars(char **eargv, int eargc)
 //
 // Hints:
 // - if O_CREAT is used, add S_IWUSR and S_IRUSR
-// 	to make it a 0able normal file
+// 	to make it a readable normal file
 static int
 open_redir_fd(char *file, int flags)
 {
@@ -93,14 +93,12 @@ wrapper_dup2(int fd, int flow)
 		if (dup2(fd, flow) < 0) {
 			perror("dup2");
 			printf_debug(errno);
-			printf_debug("Terminando...");
 			_exit(-1);
 		};
 		return;
 	}
 	perror("fd < 0 en dup2");
 	printf_debug(errno);
-	printf_debug("Terminando...");
 	_exit(-1);
 }
 
@@ -128,7 +126,6 @@ exec_cmd(struct cmd *cmd)
 		if (execvp(e->argv[0], e->argv) < 0) {
 			perror("execvp");
 			printf_debug(errno);
-			printf_debug("Terminando...");
 			_exit(-1);
 		};
 		_exit(-1);
@@ -189,7 +186,6 @@ exec_cmd(struct cmd *cmd)
 		if (pipe(pipe_fds) < 0) {
 			perror("pipe");
 			printf_debug(errno);
-			printf_debug("Terminando...");
 			_exit(-1);
 		}
 
@@ -199,7 +195,6 @@ exec_cmd(struct cmd *cmd)
 		if (left_child < 0) {
 			perror("left_fork_pipe");
 			printf_debug(errno);
-			printf_debug("Terminando...");
 			exit(-1);
 		}
 		if (left_child == 0) {
@@ -212,7 +207,6 @@ exec_cmd(struct cmd *cmd)
 			if (right_child < 0) {
 				perror("right_fork_pipe");
 				printf_debug(errno);
-				printf_debug("Terminando...");
 				exit(-1);
 			}
 			if (right_child == 0) {
